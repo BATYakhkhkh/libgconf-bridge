@@ -1,0 +1,5 @@
+2005-11-28  Jorn Baayen  <jorn@openedhand.com>
+
+	* Initial import of libgconf-bridge, a small GConf convenience
+	library.
+
