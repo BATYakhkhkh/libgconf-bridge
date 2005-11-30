@@ -1,3 +1,11 @@
+2005-11-30  Jorn Baayen  <jorn@openedhand.com>
+
+	* libgconf-bridge/gconf-bridge.c: (prop_binding_sync_prop_to_pref),
+	(prop_binding_perform_scheduled_sync), (prop_binding_prop_changed),
+	(gconf_bridge_bind_property_full), (prop_binding_unbind):
+
+	Do not waste memory on unnecessary value caching.
+
 2005-11-28  Jorn Baayen  <jorn@openedhand.com>
 
 	* Initial import of libgconf-bridge, a small GConf convenience

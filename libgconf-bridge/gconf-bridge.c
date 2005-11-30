@@ -41,6 +41,7 @@ typedef enum {
 typedef struct {
         BindingType type;
         guint id;
+        gboolean delayed_mode;
 
         char *key;
         guint val_notify_id;
@@ -49,9 +50,7 @@ typedef struct {
         GParamSpec *prop;
         gulong prop_notify_id;
 
-        /* These two are used in delayed mode */
-        GValue *cached_value;
-        guint sync_timeout_id;
+        guint sync_timeout_id; /* Used in delayed mode */
 
         gboolean blocked;
 } PropBinding;
@@ -238,74 +237,85 @@ done:
 
 /* Syncs an object property to GConf */
 static void
-prop_binding_sync_prop_to_pref (PropBinding *binding,
-                                GValue      *value)
+prop_binding_sync_prop_to_pref (PropBinding *binding)
 {
-        switch (value->g_type) {
+        GValue value;
+
+        memset (&value, 0, sizeof (GValue));
+
+        g_value_init (&value,
+                      G_PARAM_SPEC_VALUE_TYPE (binding->prop));
+        g_object_get_property (binding->object,
+                               binding->prop->name,
+                               &value);
+
+        switch (value.g_type) {
         case G_TYPE_STRING:
                 gconf_client_set_string (bridge->client, binding->key,
-                                         g_value_get_string (value), NULL);
+                                         g_value_get_string (&value), NULL);
                 break;
         case G_TYPE_INT:
                 gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_int (value), NULL);
+                                      g_value_get_int (&value), NULL);
                 break;
         case G_TYPE_UINT:
                 gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_uint (value), NULL);
+                                      g_value_get_uint (&value), NULL);
                 break;
         case G_TYPE_LONG:
                 gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_long (value), NULL);
+                                      g_value_get_long (&value), NULL);
                 break;
         case G_TYPE_ULONG:
                 gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_ulong (value), NULL);
+                                      g_value_get_ulong (&value), NULL);
                 break;
         case G_TYPE_INT64:
                 gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_int64 (value), NULL);
+                                      g_value_get_int64 (&value), NULL);
                 break;
         case G_TYPE_UINT64:
                 gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_uint64 (value), NULL);
+                                      g_value_get_uint64 (&value), NULL);
                 break;
         case G_TYPE_CHAR:
                 gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_char (value), NULL);
+                                      g_value_get_char (&value), NULL);
                 break;
         case G_TYPE_UCHAR:
                 gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_uchar (value), NULL);
+                                      g_value_get_uchar (&value), NULL);
                 break;
         case G_TYPE_ENUM:
                 gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_enum (value), NULL);
+                                      g_value_get_enum (&value), NULL);
                 break;
         case G_TYPE_BOOLEAN:
                 gconf_client_set_bool (bridge->client, binding->key,
-                                       g_value_get_boolean (value), NULL);
+                                       g_value_get_boolean (&value), NULL);
                 break;
         case G_TYPE_DOUBLE:
                 gconf_client_set_float (bridge->client, binding->key,
-                                        g_value_get_double (value), NULL);
+                                        g_value_get_double (&value), NULL);
                 break;
         case G_TYPE_FLOAT:
                 gconf_client_set_float (bridge->client, binding->key,
-                                        g_value_get_float (value), NULL);
+                                        g_value_get_float (&value), NULL);
                 break;
         default:
-                if (g_type_is_a (value->g_type, G_TYPE_ENUM)) {
+                if (g_type_is_a (value.g_type, G_TYPE_ENUM)) {
                         gconf_client_set_int (bridge->client, binding->key,
-                                              g_value_get_enum (value), NULL);
+                                              g_value_get_enum (&value), NULL);
                 } else {
                         g_warning ("prop_binding_sync_prop_to_pref: "
                                    "Unhandled value type '%s'.\n",
-                                   g_type_name (value->g_type));
+                                   g_type_name (value.g_type));
                 }
 
                 break;
         }
+
+        g_value_unset (&value);
 }
 
 /* Called when a GConf value bound to an object property has changed */
@@ -340,8 +350,7 @@ prop_binding_perform_scheduled_sync (PropBinding *binding)
 {
         binding->blocked = TRUE;
 
-        prop_binding_sync_prop_to_pref (binding, binding->cached_value);
-        g_value_reset (binding->cached_value);
+        prop_binding_sync_prop_to_pref (binding);
 
         binding->sync_timeout_id = 0;
 
@@ -366,12 +375,8 @@ prop_binding_prop_changed (GObject     *object,
                 return;
         binding->blocked = TRUE;
 
-        if (binding->cached_value) {
-                /* Just cache up and schedule a sync */
-                g_object_get_property (object,
-                                       param_spec->name,
-                                       binding->cached_value);
-
+        if (binding->delayed_mode) {
+                /* Just schedule a sync */
                 if (binding->sync_timeout_id == 0) {
                         /* We keep a reference on the object as long as
                          * we haven't synced yet to make sure we don't
@@ -387,17 +392,7 @@ prop_binding_prop_changed (GObject     *object,
                 }
         } else {
                 /* Directly sync */
-                GValue value;
-
-                memset (&value, 0, sizeof (GValue));
-
-                g_value_init (&value,
-                              G_PARAM_SPEC_VALUE_TYPE (param_spec));
-                g_object_get_property (object,
-                                       param_spec->name,
-                                       &value);
-                prop_binding_sync_prop_to_pref (binding, &value);
-                g_value_unset (&value);
+                prop_binding_sync_prop_to_pref (binding);
         }
 
         binding->blocked = FALSE;
@@ -472,20 +467,13 @@ gconf_bridge_bind_property_full (GConfBridge *bridge,
 
         binding->type = BINDING_PROP;
         binding->id = new_id ();
+        binding->delayed_mode = delayed_sync;
         binding->key = g_strdup (key);
         binding->object = object;
         binding->prop = pspec;
         binding->sync_timeout_id = 0;
         binding->blocked = FALSE;
         
-        if (delayed_sync) {
-                binding->cached_value = g_new0 (GValue, 1);
-        
-                g_value_init (binding->cached_value,
-                              G_PARAM_SPEC_VALUE_TYPE (pspec));
-        } else
-                binding->cached_value = NULL;
-
         /* Watch GConf key */
         binding->val_notify_id =
                 gconf_client_notify_add (bridge->client, key,
@@ -523,17 +511,13 @@ gconf_bridge_bind_property_full (GConfBridge *bridge,
 static void
 prop_binding_unbind (PropBinding *binding)
 {
-        if (binding->cached_value) {
+        if (binding->delayed_mode && binding->sync_timeout_id > 0) {
                 /* Perform any scheduled syncs */
-                if (binding->sync_timeout_id > 0) {
-                        g_source_remove (binding->sync_timeout_id);
+                g_source_remove (binding->sync_timeout_id);
                         
-                        /* The object will still be around as we have
-                         * a reference */
-                        prop_binding_perform_scheduled_sync (binding);
-                }
-
-                g_free (binding->cached_value);
+                /* The object will still be around as we have
+                 * a reference */
+                prop_binding_perform_scheduled_sync (binding);
         }
 
         gconf_client_notify_remove (bridge->client,
