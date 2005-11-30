@@ -1,5 +1,21 @@
 2005-11-30  Jorn Baayen  <jorn@openedhand.com>
 
+	* libgconf-bridge/gconf-bridge.c: (prop_binding_sync_pref_to_prop),
+	(prop_binding_sync_prop_to_pref), (prop_binding_pref_changed),
+	(prop_binding_perform_scheduled_sync), (prop_binding_prop_changed),
+	(gconf_bridge_bind_property_full), (prop_binding_unbind),
+	(list_store_binding_sync_pref_to_store),
+	(list_store_binding_sync_store_to_pref),
+	(list_store_binding_pref_changed),
+	(list_store_binding_store_changed_cb),
+	(gconf_bridge_bind_string_list_store), (list_store_binding_unbind):
+
+	Keep track of changes as to avoid the "backsync" effect.
+
+	Also cleaned up blocking.
+
+2005-11-30  Jorn Baayen  <jorn@openedhand.com>
+
 	* libgconf-bridge/gconf-bridge.c:
 	(window_binding_perform_scheduled_sync),
 	(gconf_bridge_bind_window), (window_binding_unbind):

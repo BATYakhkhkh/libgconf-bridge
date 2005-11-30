@@ -46,14 +46,15 @@ typedef struct {
 
         char *key;
         guint val_notify_id;
+        GSList *val_changes; /* List of changes made to GConf value,
+                                that have not received change notification
+                                yet. */
 
         GObject *object;
         GParamSpec *prop;
         gulong prop_notify_id;
 
         guint sync_timeout_id; /* Used in delayed mode */
-
-        gboolean blocked;
 } PropBinding;
 
 typedef struct {
@@ -77,15 +78,17 @@ typedef struct {
 
         char *key;
         guint val_notify_id;
+        GSList *val_changes; /* List of changes made to GConf value,
+                                that have not received change notification
+                                yet. */
 
         GtkListStore *list_store;
         guint row_inserted_id;
         guint row_changed_id;
         guint row_deleted_id;
         guint rows_reordered_id;
-        guint sync_idle_id;
 
-        gboolean blocked;
+        guint sync_idle_id;
 } ListStoreBinding;
 
 /* Some trickery to be able to treat the data structures generically */
@@ -100,6 +103,10 @@ typedef union {
 /* Function prototypes */
 static void
 unbind (Binding *binding);
+
+/* FIXME this is exported by GConf, but not in any headers. See #322832 */
+int gconf_value_compare (const GConfValue *value_a,
+                         const GConfValue *value_b);
 
 static GConfBridge *bridge = NULL; /* Global GConfBridge object */
 
@@ -177,7 +184,10 @@ prop_binding_sync_pref_to_prop (PropBinding *binding,
                                 GConfValue  *pref_value)
 {
         GValue src_value, value;
-        
+
+        /* Make sure we don't enter an infinite synchronizing loop */
+        g_signal_handler_block (binding->object, binding->prop_notify_id);
+
         memset (&src_value, 0, sizeof (GValue));
 
         /* First, convert GConfValue to GValue */
@@ -234,6 +244,8 @@ prop_binding_sync_pref_to_prop (PropBinding *binding,
 done:
         g_value_unset (&src_value);
         g_value_unset (&value);
+
+        g_signal_handler_unblock (binding->object, binding->prop_notify_id);
 }
 
 /* Syncs an object property to GConf */
@@ -241,6 +253,7 @@ static void
 prop_binding_sync_prop_to_pref (PropBinding *binding)
 {
         GValue value;
+        GConfValue *gconf_value;
 
         memset (&value, 0, sizeof (GValue));
 
@@ -252,70 +265,99 @@ prop_binding_sync_prop_to_pref (PropBinding *binding)
 
         switch (value.g_type) {
         case G_TYPE_STRING:
-                gconf_client_set_string (bridge->client, binding->key,
-                                         g_value_get_string (&value), NULL);
+                gconf_value = gconf_value_new (GCONF_VALUE_STRING);
+                gconf_value_set_string (gconf_value,
+                                        g_value_get_string (&value));
                 break;
         case G_TYPE_INT:
-                gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_int (&value), NULL);
+                gconf_value = gconf_value_new (GCONF_VALUE_INT);
+                gconf_value_set_int (gconf_value,
+                                     g_value_get_int (&value));
                 break;
         case G_TYPE_UINT:
-                gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_uint (&value), NULL);
+                gconf_value = gconf_value_new (GCONF_VALUE_INT);
+                gconf_value_set_int (gconf_value,
+                                     g_value_get_uint (&value));
                 break;
         case G_TYPE_LONG:
-                gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_long (&value), NULL);
+                gconf_value = gconf_value_new (GCONF_VALUE_INT);
+                gconf_value_set_int (gconf_value,
+                                     g_value_get_long (&value));
                 break;
         case G_TYPE_ULONG:
-                gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_ulong (&value), NULL);
+                gconf_value = gconf_value_new (GCONF_VALUE_INT);
+                gconf_value_set_int (gconf_value,
+                                     g_value_get_ulong (&value));
                 break;
         case G_TYPE_INT64:
-                gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_int64 (&value), NULL);
+                gconf_value = gconf_value_new (GCONF_VALUE_INT);
+                gconf_value_set_int (gconf_value,
+                                     g_value_get_int64 (&value));
                 break;
         case G_TYPE_UINT64:
-                gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_uint64 (&value), NULL);
+                gconf_value = gconf_value_new (GCONF_VALUE_INT);
+                gconf_value_set_int (gconf_value,
+                                     g_value_get_uint64 (&value));
                 break;
         case G_TYPE_CHAR:
-                gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_char (&value), NULL);
+                gconf_value = gconf_value_new (GCONF_VALUE_INT);
+                gconf_value_set_int (gconf_value,
+                                     g_value_get_char (&value));
                 break;
         case G_TYPE_UCHAR:
-                gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_uchar (&value), NULL);
+                gconf_value = gconf_value_new (GCONF_VALUE_INT);
+                gconf_value_set_int (gconf_value,
+                                     g_value_get_uchar (&value));
                 break;
         case G_TYPE_ENUM:
-                gconf_client_set_int (bridge->client, binding->key,
-                                      g_value_get_enum (&value), NULL);
+                gconf_value = gconf_value_new (GCONF_VALUE_INT);
+                gconf_value_set_int (gconf_value,
+                                     g_value_get_enum (&value));
                 break;
         case G_TYPE_BOOLEAN:
-                gconf_client_set_bool (bridge->client, binding->key,
-                                       g_value_get_boolean (&value), NULL);
+                gconf_value = gconf_value_new (GCONF_VALUE_BOOL);
+                gconf_value_set_bool (gconf_value,
+                                      g_value_get_boolean (&value));
                 break;
         case G_TYPE_DOUBLE:
-                gconf_client_set_float (bridge->client, binding->key,
-                                        g_value_get_double (&value), NULL);
+                gconf_value = gconf_value_new (GCONF_VALUE_FLOAT);
+                gconf_value_set_float (gconf_value,
+                                       g_value_get_double (&value));
                 break;
         case G_TYPE_FLOAT:
-                gconf_client_set_float (bridge->client, binding->key,
-                                        g_value_get_float (&value), NULL);
+                gconf_value = gconf_value_new (GCONF_VALUE_FLOAT);
+                gconf_value_set_float (gconf_value,
+                                       g_value_get_float (&value));
                 break;
         default:
                 if (g_type_is_a (value.g_type, G_TYPE_ENUM)) {
-                        gconf_client_set_int (bridge->client, binding->key,
-                                              g_value_get_enum (&value), NULL);
+                        gconf_value = gconf_value_new (GCONF_VALUE_INT);
+                        gconf_value_set_int (gconf_value,
+                                             g_value_get_enum (&value));
                 } else {
                         g_warning ("prop_binding_sync_prop_to_pref: "
                                    "Unhandled value type '%s'.\n",
                                    g_type_name (value.g_type));
+
+                        goto done;
                 }
 
                 break;
         }
 
+        /* Set to GConf */
+        gconf_client_set (bridge->client, binding->key, gconf_value, NULL);
+
+        /* Store until change notification comes in, so that we are able
+         * to ignore it */
+        if (gconf_value->type == GCONF_VALUE_FLOAT) /* FIXME see #322837 */
+                gconf_value_free (gconf_value);
+        else {
+                binding->val_changes = g_slist_append (binding->val_changes,
+                                                       gconf_value);
+        }
+
+done:
         g_value_unset (&value);
 }
 
@@ -326,22 +368,30 @@ prop_binding_pref_changed (GConfClient *client,
                            GConfEntry  *entry,
                            gpointer     user_data)
 {
+        GConfValue *gconf_value;
         PropBinding *binding;
-        GConfValue *val;
+        GSList *l;
+
+        gconf_value = gconf_entry_get_value (entry);
+        if (!gconf_value)
+                return; /* NULL means that the value has been unset */
 
         binding = (PropBinding *) user_data;
 
-        /* Make sure we don't enter an infinite synchronizing loop */
-        if (binding->blocked)
+        /* Check that this notification is not caused by sync_prop_to_pref() */
+        l = g_slist_find_custom (binding->val_changes,
+                                 gconf_value,
+                                 (GCompareFunc) gconf_value_compare);
+        if (l) {
+                gconf_value_free (l->data);
+
+                binding->val_changes = g_slist_delete_link
+                        (binding->val_changes, l);
+
                 return;
-        binding->blocked = TRUE;
+        }
 
-        val = gconf_entry_get_value (entry);
-        /* NULL means that the value has been unset */
-        if (val)
-                prop_binding_sync_pref_to_prop (binding, val);
-
-        binding->blocked = FALSE;
+        prop_binding_sync_pref_to_prop (binding, gconf_value);
 }
 
 /* Performs a scheduled prop-to-pref sync for a prop binding in 
@@ -349,16 +399,12 @@ prop_binding_pref_changed (GConfClient *client,
 static gboolean
 prop_binding_perform_scheduled_sync (PropBinding *binding)
 {
-        binding->blocked = TRUE;
-
         prop_binding_sync_prop_to_pref (binding);
 
         binding->sync_timeout_id = 0;
 
         g_object_unref (binding->object);
         
-        binding->blocked = FALSE;
-
         return FALSE;
 }
 
@@ -371,11 +417,6 @@ prop_binding_prop_changed (GObject     *object,
                            GParamSpec  *param_spec,
                            PropBinding *binding)
 {
-        /* Make sure we don't enter an infinite synchronizing loop */
-        if (binding->blocked)
-                return;
-        binding->blocked = TRUE;
-
         if (binding->delayed_mode) {
                 /* Just schedule a sync */
                 if (binding->sync_timeout_id == 0) {
@@ -395,8 +436,6 @@ prop_binding_prop_changed (GObject     *object,
                 /* Directly sync */
                 prop_binding_sync_prop_to_pref (binding);
         }
-
-        binding->blocked = FALSE;
 }
 
 /* Called when an object is destroyed */
@@ -469,24 +508,17 @@ gconf_bridge_bind_property_full (GConfBridge *bridge,
         binding->type = BINDING_PROP;
         binding->id = new_id ();
         binding->delayed_mode = delayed_sync;
+        binding->val_changes = NULL;
         binding->key = g_strdup (key);
         binding->object = object;
         binding->prop = pspec;
         binding->sync_timeout_id = 0;
-        binding->blocked = FALSE;
         
         /* Watch GConf key */
         binding->val_notify_id =
                 gconf_client_notify_add (bridge->client, key,
                                          prop_binding_pref_changed,
                                          binding, NULL, NULL);
-
-        /* Sync object to value from GConf, if set */
-        val = gconf_client_get (bridge->client, key, NULL);
-        if (val) {
-                prop_binding_sync_pref_to_prop (binding, val);
-                gconf_value_free (val);
-        }
 
         /* Connect to property change notifications */
         signal = g_strconcat ("notify::", prop, NULL);
@@ -495,6 +527,13 @@ gconf_bridge_bind_property_full (GConfBridge *bridge,
                                   G_CALLBACK (prop_binding_prop_changed),
                                   binding);
         g_free (signal);
+
+        /* Sync object to value from GConf, if set */
+        val = gconf_client_get (bridge->client, key, NULL);
+        if (val) {
+                prop_binding_sync_pref_to_prop (binding, val);
+                gconf_value_free (val);
+        }
 
         /* Handle case where watched object gets destroyed */
         g_object_weak_ref (object,
@@ -524,6 +563,13 @@ prop_binding_unbind (PropBinding *binding)
         gconf_client_notify_remove (bridge->client,
                                     binding->val_notify_id);
         g_free (binding->key);
+
+        while (binding->val_changes) {
+                gconf_value_free (binding->val_changes->data);
+
+                binding->val_changes = g_slist_delete_link
+                        (binding->val_changes, binding->val_changes);
+        }
 
         /* The object might have been destroyed .. */
         if (binding->object) {
@@ -779,6 +825,12 @@ list_store_binding_sync_pref_to_store (ListStoreBinding *binding,
 {
         GSList *list, *l;
         GtkTreeIter iter;
+
+        /* Make sure we don't enter an infinite synchronizing loop */
+        g_signal_handler_block (binding->list_store,
+                                binding->row_inserted_id);
+        g_signal_handler_block (binding->list_store,
+                                binding->row_deleted_id);
         
         gtk_list_store_clear (binding->list_store);
 
@@ -795,16 +847,22 @@ list_store_binding_sync_pref_to_store (ListStoreBinding *binding,
                                                    0, string,
                                                    -1);
         }
+
+        g_signal_handler_unblock (binding->list_store,
+                                  binding->row_inserted_id);
+        g_signal_handler_unblock (binding->list_store,
+                                  binding->row_deleted_id);
 }
 
 /* Sets a GConf value to the contents of a GtkListStore */
 static gboolean
-list_store_binding_sync_to_pref (ListStoreBinding *binding)
+list_store_binding_sync_store_to_pref (ListStoreBinding *binding)
 {
         GtkTreeModel *tree_model;
         GtkTreeIter iter;
         GSList *list;
         int res;
+        GConfValue *gconf_value;
 
         tree_model = GTK_TREE_MODEL (binding->list_store);
 
@@ -813,26 +871,31 @@ list_store_binding_sync_to_pref (ListStoreBinding *binding)
         res = gtk_tree_model_get_iter_first (tree_model, &iter);
         while (res) {
                 char *string;
+                GConfValue *tmp_value;
 
                 gtk_tree_model_get (tree_model, &iter,
                                     0, &string, -1);
-                list = g_slist_append (list, string);
+
+                tmp_value = gconf_value_new (GCONF_VALUE_STRING);
+                gconf_value_set_string (tmp_value, string);
+
+                list = g_slist_append (list, tmp_value);
 
                 res = gtk_tree_model_iter_next (tree_model, &iter);
         }
 
+        /* Create value */
+        gconf_value = gconf_value_new (GCONF_VALUE_LIST);
+        gconf_value_set_list_type (gconf_value, GCONF_VALUE_STRING);
+        gconf_value_set_list_nocopy (gconf_value, list);
+
         /* Set */
-        gconf_client_set_list (bridge->client, binding->key,
-                               GCONF_VALUE_STRING, list, NULL);
+        gconf_client_set (bridge->client, binding->key, gconf_value, NULL);
 
-        /* Cleanup */
-        while (list) {
-                char *string;
-
-                string = list->data;
-                list = g_slist_delete_link (list, list);
-                g_free (string);
-        }
+        /* Store until change notification comes in, so that we are able
+         * to ignore it */
+        binding->val_changes = g_slist_append (binding->val_changes,
+                                               gconf_value);
 
         binding->sync_idle_id = 0;
 
@@ -848,22 +911,31 @@ list_store_binding_pref_changed (GConfClient *client,
                                  GConfEntry  *entry,
                                  gpointer     user_data)
 {
+        GConfValue *gconf_value;
         ListStoreBinding *binding;
-        GConfValue *val;
+        GSList *l;
+
+        gconf_value = gconf_entry_get_value (entry);
+        if (!gconf_value)
+                return; /* NULL means that the value has been unset */
 
         binding = (ListStoreBinding *) user_data;
 
-        /* Make sure we don't enter an infinite synchronizing loop */
-        if (binding->blocked)
+        /* Check that this notification is not caused by
+         * sync_store_to_pref() */
+        l = g_slist_find_custom (binding->val_changes,
+                                 gconf_value,
+                                 (GCompareFunc) gconf_value_compare);
+        if (l) {
+                gconf_value_free (l->data);
+
+                binding->val_changes = g_slist_delete_link
+                        (binding->val_changes, l);
+
                 return;
-        binding->blocked = TRUE;
+        }
 
-        val = gconf_entry_get_value (entry);
-        /* NULL means that the value has been unset */
-        if (val)
-                list_store_binding_sync_pref_to_store (binding, val);
-
-        binding->blocked = FALSE;
+        list_store_binding_sync_pref_to_store (binding, gconf_value);
 }
 
 /* Called when an object is destroyed */
@@ -889,7 +961,7 @@ list_store_binding_store_changed_cb (ListStoreBinding *binding)
                 g_object_ref (binding->list_store);
 
                 binding->sync_idle_id = g_idle_add
-                        ((GSourceFunc) list_store_binding_sync_to_pref,
+                        ((GSourceFunc) list_store_binding_sync_store_to_pref,
                          binding);
         }
 }
@@ -942,22 +1014,15 @@ gconf_bridge_bind_string_list_store (GConfBridge  *bridge,
         binding->type = BINDING_LIST_STORE;
         binding->id = new_id ();
         binding->key = g_strdup (key);
+        binding->val_changes = NULL;
         binding->list_store = list_store;
         binding->sync_idle_id = 0;
-        binding->blocked = FALSE;
 
         /* Watch GConf key */
         binding->val_notify_id =
                 gconf_client_notify_add (bridge->client, key,
                                          list_store_binding_pref_changed,
                                          binding, NULL, NULL);
-
-        /* Sync object to value from GConf, if set */
-        val = gconf_client_get (bridge->client, key, NULL);
-        if (val) {
-                list_store_binding_sync_pref_to_store (binding, val);
-                gconf_value_free (val);
-        }
 
         /* Connect to ListStore change notifications */
         binding->row_inserted_id =
@@ -981,6 +1046,13 @@ gconf_bridge_bind_string_list_store (GConfBridge  *bridge,
                                           (list_store_binding_store_changed_cb),
                                           binding);
 
+        /* Sync object to value from GConf, if set */
+        val = gconf_client_get (bridge->client, key, NULL);
+        if (val) {
+                list_store_binding_sync_pref_to_store (binding, val);
+                gconf_value_free (val);
+        }
+
         /* Handle case where watched object gets destroyed */
         g_object_weak_ref (G_OBJECT (list_store),
                            list_store_binding_store_destroyed, binding);
@@ -1002,10 +1074,17 @@ list_store_binding_unbind (ListStoreBinding *binding)
                 g_source_remove (binding->sync_idle_id);
 
                 /* The store will still be around as we added a reference */
-                list_store_binding_sync_to_pref (binding);
+                list_store_binding_sync_store_to_pref (binding);
         }
 
         g_free (binding->key);
+
+        while (binding->val_changes) {
+                gconf_value_free (binding->val_changes->data);
+
+                binding->val_changes = g_slist_delete_link
+                        (binding->val_changes, binding->val_changes);
+        }
 
         /* The store might have been destroyed .. */
         if (binding->list_store) {
