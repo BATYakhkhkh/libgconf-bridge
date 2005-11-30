@@ -41,6 +41,7 @@ typedef enum {
 typedef struct {
         BindingType type;
         guint id;
+        
         gboolean delayed_mode;
 
         char *key;
@@ -59,10 +60,10 @@ typedef struct {
         BindingType type;
         guint id;
 
-        char *width_key;
-        char *height_key;
-        char *x_key;
-        char *y_key;
+        gboolean bind_size;
+        gboolean bind_pos;
+
+        char *key_prefix;
 
         GtkWindow *window;
         gulong configure_event_id;
@@ -542,32 +543,34 @@ prop_binding_unbind (PropBinding *binding)
 static gboolean
 window_binding_perform_scheduled_sync (WindowBinding *binding)
 {
-        if (binding->width_key) {
+        if (binding->bind_size) {
                 int width, height;
+                char *key;
 
                 gtk_window_get_size (binding->window, &width, &height);
 
-                gconf_client_set_int (bridge->client,
-                                      binding->width_key, width,
-                                      NULL);
+                key = g_strconcat (binding->key_prefix, "_width", NULL);
+                gconf_client_set_int (bridge->client, key, width, NULL);
+                g_free (key);
 
-                gconf_client_set_int (bridge->client,
-                                      binding->height_key, height,
-                                      NULL);
+                key = g_strconcat (binding->key_prefix, "_height", NULL);
+                gconf_client_set_int (bridge->client, key, height, NULL);
+                g_free (key);
         }
 
-        if (binding->x_key) {
+        if (binding->bind_pos) {
                 int x, y;
+                char *key;
 
                 gtk_window_get_position (binding->window, &x, &y);
 
-                gconf_client_set_int (bridge->client,
-                                      binding->x_key, x,
-                                      NULL);
+                key = g_strconcat (binding->key_prefix, "_x", NULL);
+                gconf_client_set_int (bridge->client, key, x, NULL);
+                g_free (key);
 
-                gconf_client_set_int (bridge->client,
-                                      binding->y_key, y,
-                                      NULL);
+                key = g_strconcat (binding->key_prefix, "_y", NULL);
+                gconf_client_set_int (bridge->client, key, y, NULL);
+                g_free (key);
         }
 
         binding->sync_timeout_id = 0;
@@ -634,9 +637,9 @@ window_binding_window_destroyed (gpointer user_data,
  * @bind_pos: TRUE to bind the position of @window
  * 
  * On calling this function @window will be resized to the values
- * specified by "@key_prefix _width" and "@key_prefix _height" if @bind_size
- * is TRUE, and moved to the values specified by "@key_prefix _x" and
- * "@key_prefix _y" if @bind_pos is TRUE.
+ * specified by "@key_prefix<!-- -->_width" and "@key_prefix<!-- -->_height" if
+ * @bind_size is TRUE, and moved to the values specified by
+ * "@key_prefix<!-- -->_x" and "@key_prefix<!-- -->_y" if @bind_pos is TRUE.
  * The respective GConf values will be updated when the window is resized
  * and/or moved.
  *
@@ -660,20 +663,25 @@ gconf_bridge_bind_window (GConfBridge *bridge,
 
         binding->type = BINDING_WINDOW;
         binding->id = new_id ();
+        binding->bind_size = bind_size;
+        binding->bind_pos = bind_pos;
+        binding->key_prefix = g_strdup (key_prefix);
         binding->window = window;
         binding->sync_timeout_id = 0;
 
         /* Set up GConf keys & sync window to GConf values */
         if (bind_size) {
+                char *key;
                 GConfValue *width_val, *height_val;
 
-                binding->width_key = g_strconcat (key_prefix, "_width", NULL);
-                binding->height_key = g_strconcat (key_prefix, "_height", NULL);
-                
-                width_val = gconf_client_get (bridge->client,
-                                              binding->width_key, NULL);
-                height_val = gconf_client_get (bridge->client,
-                                               binding->height_key, NULL);
+                key = g_strconcat (key_prefix, "_width", NULL);
+                width_val = gconf_client_get (bridge->client, key, NULL);
+                g_free (key);
+
+                key = g_strconcat (key_prefix, "_height", NULL);
+                height_val = gconf_client_get (bridge->client, key, NULL);
+                g_free (key);
+
                 if (width_val && height_val) {
                         gtk_window_resize (window,
                                            gconf_value_get_int (width_val),
@@ -686,21 +694,20 @@ gconf_bridge_bind_window (GConfBridge *bridge,
                 } else if (height_val) {
                         gconf_value_free (height_val);
                 }
-        } else {
-                binding->width_key = NULL;
-                binding->height_key = NULL;
-        }
+        } 
 
         if (bind_pos) {
+                char *key;
                 GConfValue *x_val, *y_val;
                 
-                binding->x_key = g_strconcat (key_prefix, "_x", NULL);
-                binding->y_key = g_strconcat (key_prefix, "_y", NULL);
+                key = g_strconcat (key_prefix, "_x", NULL);
+                x_val = gconf_client_get (bridge->client, key, NULL);
+                g_free (key);
 
-                x_val = gconf_client_get (bridge->client,
-                                          binding->x_key, NULL);
-                y_val = gconf_client_get (bridge->client,
-                                          binding->y_key, NULL);
+                key = g_strconcat (key_prefix, "_y", NULL);
+                y_val = gconf_client_get (bridge->client, key, NULL);
+                g_free (key);
+
                 if (x_val && y_val) {
                         gtk_window_move (window,
                                          gconf_value_get_int (x_val),
@@ -713,9 +720,6 @@ gconf_bridge_bind_window (GConfBridge *bridge,
                 } else if (y_val) {
                         gconf_value_free (y_val);
                 }
-        } else {
-                binding->x_key = NULL;
-                binding->y_key = NULL;
         }
 
         /* Connect to window size change notifications */
@@ -750,10 +754,7 @@ window_binding_unbind (WindowBinding *binding)
         if (binding->sync_timeout_id > 0)
                 g_source_remove (binding->sync_timeout_id);
 
-        g_free (binding->width_key);
-        g_free (binding->height_key);
-        g_free (binding->x_key);
-        g_free (binding->y_key);
+        g_free (binding->key_prefix);
 
         /* The window might have been destroyed .. */
         if (binding->window) {
