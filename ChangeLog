@@ -3,6 +3,14 @@
 	* configure.ac:
 	* libgconf-bridge/gconf-bridge.c:
 
+	Added a check for CORBA GConf, and if found add a ( better ) workaround
+	for GConf bug #322837.
+
+2005-12-09  Jorn Baayen  <jorn@openedhand.com>
+
+	* configure.ac:
+	* libgconf-bridge/gconf-bridge.c:
+
 	Added check for gconf_value_compare() declaration.
 
 2005-11-30  Jorn Baayen  <jorn@openedhand.com>

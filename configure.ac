@@ -20,6 +20,15 @@ CFLAGS=$LIBGCONF_BRIDGE_CFLAGS
 AC_CHECK_DECLS(gconf_value_compare, [], [], [#include <gconf/gconf.h>])
 CFLAGS=$old_cflags
 
+AC_MSG_CHECKING(whether we are using CORBA GConf)
+if `pkg-config --libs gconf-2.0 | grep -q ORBit`; then
+        AC_MSG_RESULT(yes)
+
+        AC_DEFINE(HAVE_CORBA_GCONF, 1, [Defined if we are using CORBA GConf])
+else
+        AC_MSG_RESULT(no)
+fi
+
 ALL_LINGUAS=""
 AM_GLIB_GNU_GETTEXT
 
