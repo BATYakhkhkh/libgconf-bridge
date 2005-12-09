@@ -7,6 +7,7 @@
   </bookinfo>
 
   <chapter>
+    <title>API Reference</title>
     <xi:include href="xml/gconf-bridge.xml"/>
   </chapter>
 </book>

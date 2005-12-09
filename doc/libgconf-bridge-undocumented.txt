@@ -1,14 +1,8 @@
-64% symbol docs coverage.
-9 symbols documented.
-1 symbols incomplete.
-5 not documented.
+100% symbol docs coverage.
+14 symbols documented.
+0 symbols incomplete.
+0 not documented.
 
 
-GConfBridge
-gconf_bridge_bind_property
-gconf_bridge_bind_property_delayed
-gconf_bridge_bind_window (window)
-gconf_bridge_bind_window_pos
-gconf_bridge_bind_window_size
 
 

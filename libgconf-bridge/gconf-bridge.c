@@ -685,7 +685,7 @@ window_binding_window_destroyed (gpointer user_data,
  * gconf_bridge_bind_window
  * @bridge: A #GConfBridge
  * @key_prefix: The prefix of the GConf keys
- * @object: A #GtkWindow
+ * @window: A #GtkWindow
  * @bind_size: TRUE to bind the size of @window
  * @bind_pos: TRUE to bind the position of @window
  * 

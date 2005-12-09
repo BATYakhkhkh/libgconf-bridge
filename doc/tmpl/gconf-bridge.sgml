@@ -9,12 +9,10 @@ GConf bridge
 
 </para>
 
-
 <!-- ##### SECTION See_Also ##### -->
 <para>
 
 </para>
-
 
 <!-- ##### SECTION Stability_Level ##### -->
 
@@ -28,7 +26,7 @@ GConf bridge
 
 <!-- ##### STRUCT GConfBridge ##### -->
 <para>
-
+#GConfBridge is an opaque type, there are no publicly accessible members.
 </para>
 
 

@@ -1,3 +1,11 @@
+2005-12-09  Ross Burton  <ross@openedhand.com>
+
+	* doc/libgconf-bridge-docs.sgml:
+	* doc/tmpl/gconf-bridge.sgml:
+	* libgconf-bridge/gconf-bridge.c:
+	* libgconf-bridge/gconf-bridge.h:
+	Take API documentation to 100% coverage.
+
 2005-12-09  Jorn Baayen  <jorn@openedhand.com>
 
 	* configure.ac:

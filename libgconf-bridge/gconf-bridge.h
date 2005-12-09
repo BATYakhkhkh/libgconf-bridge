@@ -42,10 +42,31 @@ guint        gconf_bridge_bind_property_full     (GConfBridge  *bridge,
                                                   const char   *prop,
                                                   gboolean      delayed_sync);
 
+/**
+ * gconf_bridge_bind_property
+ * @bridge: A #GConfBridge
+ * @key: A GConf key to be bound
+ * @object: A #GObject
+ * @prop: The property of @object to be bound
+ *
+ * Binds @key to @prop without delays, causing them to have the same value at all times. See
+ * #gconf_bridge_bind_property_full for more details.
+ *
+ **/
 #define gconf_bridge_bind_property(bridge, key, object, prop) \
         gconf_bridge_bind_property_full ((bridge), (key), \
                                          (object), (prop), FALSE)
 
+/**
+ * gconf_bridge_bind_property_delayed
+ * @bridge: A #GConfBridge
+ * @key: A GConf key to be bound
+ * @object: A #GObject
+ * @prop: The property of @object to be bound
+ *
+ * Binds @key to @prop with a delay, causing them to have the same value at all
+ * times. See #gconf_bridge_bind_property_full for more details.
+ **/
 #define gconf_bridge_bind_property_delayed(bridge, key, object, prop) \
         gconf_bridge_bind_property_full ((bridge), (key), \
                                          (object), (prop), TRUE)
@@ -56,9 +77,31 @@ guint        gconf_bridge_bind_window            (GConfBridge  *bridge,
                                                   gboolean      bind_size,
                                                   gboolean      bind_pos);
 
+/**
+ * gconf_bridge_bind_window_size
+ * @bridge: A #GConfBridge
+ * @key_prefix: The prefix of the GConf keys
+ * @window: A #GtkWindow
+ * 
+ * On calling this function @window will be resized to the values specified by
+ * "@key_prefix<!-- -->_width" and "@key_prefix<!-- -->_height".  The respective
+ * GConf values will be updated when the window is resized. See
+ * #gconf_bridge_bind_window for more details.
+ **/
 #define gconf_bridge_bind_window_size(bridge, key_prefix, window) \
         gconf_bridge_bind_window ((bridge), (key_prefix), (window), TRUE, FALSE)
 
+/**
+ * gconf_bridge_bind_window_pos
+ * @bridge: A #GConfBridge
+ * @key_prefix: The prefix of the GConf keys
+ * @window: A #GtkWindow
+ * 
+ * On calling this function @window will be moved to the values specified by
+ * "@key_prefix<!-- -->_x" and "@key_prefix<!-- -->_y". The respective GConf
+ * values will be updated when the window is moved. See
+ * #gconf_bridge_bind_window for more details.
+ **/
 #define gconf_bridge_bind_window_pos(bridge, key_prefix, window) \
         gconf_bridge_bind_window ((bridge), (key_prefix), (window), FALSE, TRUE)
 
