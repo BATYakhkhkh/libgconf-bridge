@@ -19,6 +19,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
+
 #include <glib/gi18n-lib.h>
 #include <gtk/gtkmessagedialog.h>
 #include <string.h>
@@ -104,9 +106,10 @@ typedef union {
 static void
 unbind (Binding *binding);
 
-/* FIXME this is exported by GConf, but not in any headers. See #322832 */
+#if !HAVE_DECL_GCONF_VALUE_COMPARE /* Not in headers in GConf < 2.13 */
 int gconf_value_compare (const GConfValue *value_a,
                          const GConfValue *value_b);
+#endif
 
 static GConfBridge *bridge = NULL; /* Global GConfBridge object */
 

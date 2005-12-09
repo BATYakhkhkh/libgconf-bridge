@@ -1,3 +1,10 @@
+2005-12-09  Jorn Baayen  <jorn@openedhand.com>
+
+	* configure.ac:
+	* libgconf-bridge/gconf-bridge.c:
+
+	Added check for gconf_value_compare() declaration.
+
 2005-11-30  Jorn Baayen  <jorn@openedhand.com>
 
 	* libgconf-bridge/gconf-bridge.c: (prop_binding_sync_pref_to_prop),

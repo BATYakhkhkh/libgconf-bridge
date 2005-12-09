@@ -15,6 +15,11 @@ PKG_CHECK_MODULES(LIBGCONF_BRIDGE,
                   gtk+-2.0
                   gconf-2.0)
 
+old_cflags=$CFLAGS
+CFLAGS=$LIBGCONF_BRIDGE_CFLAGS
+AC_CHECK_DECLS(gconf_value_compare, [], [], [#include <gconf/gconf.h>])
+CFLAGS=$old_cflags
+
 ALL_LINGUAS=""
 AM_GLIB_GNU_GETTEXT
 
