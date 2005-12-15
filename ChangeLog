@@ -1,3 +1,10 @@
+2005-12-15  Jorn Baayen  <jorn@openedhand.com>
+
+	* libgconf-bridge/gconf-bridge.c:
+	(gconf_bridge_bind_string_list_store):
+
+	Fix a warning under some versions of gcc.
+
 2005-12-09  Ross Burton  <ross@openedhand.com>
 
 	* doc/libgconf-bridge-docs.sgml:

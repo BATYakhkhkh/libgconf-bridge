@@ -1003,10 +1003,8 @@ gconf_bridge_bind_string_list_store (GConfBridge  *bridge,
         /* Check list store suitability */
         tree_model = GTK_TREE_MODEL (list_store);
         have_one_column = (gtk_tree_model_get_n_columns (tree_model) == 1);
-        if (have_one_column) {
-                is_string_column = (gtk_tree_model_get_column_type
+        is_string_column = (gtk_tree_model_get_column_type
                                         (tree_model, 0) == G_TYPE_STRING);
-        }
         if (G_UNLIKELY (!have_one_column || !is_string_column)) {
                 g_warning ("gconf_bridge_bind_string_list_store: Only "
                            "GtkListStores with exactly one string column are "
