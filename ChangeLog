@@ -1,3 +1,11 @@
+2006-02-16  Jorn Baayen  <jorn@openedhand.com>
+
+	* configure.ac:
+	* doc/Makefile.in:
+	* po/POTFILES.in:
+	
+	Build fixes.
+
 2005-12-15  Jorn Baayen  <jorn@openedhand.com>
 
 	* libgconf-bridge/gconf-bridge.c:
