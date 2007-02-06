@@ -41,21 +41,12 @@
   </author>
   
   <repository>
-    <CVSRepository>
-      <anon-root>:pserver:anonymous@anoncvs.gnome.org:/cvs/gnome</anon-root>
+    <SVNRepository>
+      <anon-root>http://svn.gnome.org/svn</anon-root>
       <module>libgconf-bridge</module>
-      <browse rdf:resource="http://cvs.gnome.org/viewcvs/"/>
-      <location rdf:resource="http://cvs.gnome.org/viewcvs/libgconf-bridge/"/>
+      <browse rdf:resource="http://svn.gnome.org/viewcvs/"/>
+      <location rdf:resource="http://svn.gnome.org/viewcvs/libgconf-bridge/"/>
     </CVSRepository>
   </repository>
 
-  <release>
-    <Version>
-      <name>First Release</name>
-      <created>2005-11-28</created>
-      <branch></branch>
-      <revision>0.1</revision>
-      <file-release rdf:resource="http://projects.o-hand.com/clutter/sources/clutter-0.1.0.tar.gz" />
-    </Version>
-  </release>
 </Project>
