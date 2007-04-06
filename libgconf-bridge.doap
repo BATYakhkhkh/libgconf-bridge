@@ -46,7 +46,7 @@
       <module>libgconf-bridge</module>
       <browse rdf:resource="http://svn.gnome.org/viewcvs/"/>
       <location rdf:resource="http://svn.gnome.org/viewcvs/libgconf-bridge/"/>
-    </CVSRepository>
+    </SVNRepository>
   </repository>
 
 </Project>
