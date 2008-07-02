@@ -1,5 +1,11 @@
 2008-07-02  Jorn Baayen  <jorn@openedhand.com>
 
+	* libgconf-bridge.vapi:
+
+	Corrections to Vala binding.
+
+2008-07-02  Jorn Baayen  <jorn@openedhand.com>
+
 	* Makefile.am:
 	* configure.ac:
 	* libgconf-bridge.vapi:
