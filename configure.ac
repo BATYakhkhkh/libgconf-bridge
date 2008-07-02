@@ -29,6 +29,15 @@ else
         AC_MSG_RESULT(no)
 fi
 
+PKG_CHECK_MODULES(VALA, [vala-1.0 >= 0.3.1], have_vala=yes, have_vala=no)
+
+AM_CONDITIONAL(WITH_VALA, [test "x$have_vala" = "xyes"])
+
+if test "x$have_vala" = "xyes"; then
+    VAPIDIR=`pkg-config --variable=vapidir vala-1.0`
+    AC_SUBST(VAPIDIR)
+fi
+
 GETTEXT_PACKAGE=libgconf-bridge
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], 
