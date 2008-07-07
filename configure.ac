@@ -1,5 +1,5 @@
 AC_PREREQ(2.53)
-AC_INIT(libgconf-bridge, 0.1, http://www.openedhand.com/)
+AC_INIT(libgconf-bridge, 0.2, http://www.openedhand.com/)
 AM_INIT_AUTOMAKE()
 AC_CONFIG_SRCDIR(libgconf-bridge/gconf-bridge.c)
 AM_CONFIG_HEADER(config.h)
