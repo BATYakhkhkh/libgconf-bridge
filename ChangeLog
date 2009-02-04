@@ -1,3 +1,9 @@
+2009-02-04  Bastien Nocera  <hadess@hadess.net>
+
+	* libgconf-bridge/gconf-bridge.c:
+	* libgconf-bridge/gconf-bridge.h: Fix build for
+	single GTK+ include
+
 2009-02-04  Ross Burton  <ross@linux.intel.com>
 
 	* libgconf-bridge/gconf-bridge.c:
