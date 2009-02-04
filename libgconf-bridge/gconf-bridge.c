@@ -1092,7 +1092,7 @@ gconf_bridge_bind_string_list_store (GConfBridge  *bridge,
                                           (list_store_binding_store_changed_cb),
                                           binding);
         binding->rows_reordered_id =
-                g_signal_connect_swapped (list_store, "row-reordered",
+                g_signal_connect_swapped (list_store, "rows-reordered",
                                           G_CALLBACK
                                           (list_store_binding_store_changed_cb),
                                           binding);
