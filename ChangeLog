@@ -1,3 +1,8 @@
+2009-05-07  Christian Persch  <chpe@gnome.org>
+
+	* libgconf-bridge/gconf-bridge.c: (error_handler): Safely printf
+	strings. Bug #581750.
+
 2009-02-04  Bastien Nocera  <hadess@hadess.net>
 
 	* libgconf-bridge/gconf-bridge.c:
