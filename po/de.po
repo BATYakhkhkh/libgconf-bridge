@@ -1,0 +1,29 @@
+# German translation for libgconf-bridge.
+# Copyright (C) 2009 libgconf-bridge's COPYRIGHT HOLDER
+# This file is distributed under the same license as the libgconf-bridge package.
+# Mario Blättermann <mariobl@gnome.org>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgconf-bridge master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-10-07 06:35+0000\n"
+"PO-Revision-Date: 2009-10-07 20:26+0100\n"
+"Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
+"Language-Team: German <gnome-de@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+
+#: ../libgconf-bridge/gconf-bridge.c:1229
+#, c-format
+msgid "GConf error: %s"
+msgstr "GConf-Fehler: %s"
+
+#: ../libgconf-bridge/gconf-bridge.c:1234
+msgid "All further errors shown only on terminal."
+msgstr "Alle weiteren Fehler werden nur im Terminal angezeigt."
+
