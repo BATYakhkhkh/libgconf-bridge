@@ -1,0 +1,29 @@
+# Slovenian translation for libgconf-bridge.
+# Copyright (C) 2009 libgconf-bridge's COPYRIGHT HOLDER
+# This file is distributed under the same license as the libgconf-bridge package.
+# Matej Urbanèiè <mateju@svn.gnome.org>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgconf-bridge\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-10-07 18:32+0000\n"
+"PO-Revision-Date: 2009-10-07 18:32+0000\n"
+"Last-Translator: Matej Urbanèiè <mateju@svn.gnome.org>\n"
+"Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0);\n"
+"X-Poedit-Language: Slovenian\n"
+"X-Poedit-Country: SLOVENIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: ../libgconf-bridge/gconf-bridge.c:1229
+#, c-format
+msgid "GConf error: %s"
+msgstr "Napaka GConf: %s"
+
+#: ../libgconf-bridge/gconf-bridge.c:1234
+msgid "All further errors shown only on terminal."
+msgstr "Vse nadaljnje napake bodo prikazane le v terminalu."
