@@ -1,0 +1,26 @@
+# Spanish translation for libgconf-bridge.
+# Copyright (C) 2009 libgconf-bridge's COPYRIGHT HOLDER
+# This file is distributed under the same license as the libgconf-bridge package.
+#
+# Jorge González <jorgegonz@svn.gnome.org>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: libgconf-bridge master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-10-28 22:48+0000\n"
+"PO-Revision-Date: 2009-11-02 12:13+0100\n"
+"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
+"Language-Team: Español <gnome-es-list@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../libgconf-bridge/gconf-bridge.c:1229
+#, c-format
+msgid "GConf error: %s"
+msgstr "Error de GConf: %s"
+
+#: ../libgconf-bridge/gconf-bridge.c:1234
+msgid "All further errors shown only on terminal."
+msgstr "En adelante todos los errores sólo se mostrarán en el terminal."
