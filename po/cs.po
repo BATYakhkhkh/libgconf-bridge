@@ -1,0 +1,29 @@
+# Czech translation for libgconf-bridge.
+# Copyright (C) 2009 libgconf-bridge's COPYRIGHT HOLDER
+# This file is distributed under the same license as the libgconf-bridge package.
+# Marek Černocký <marek@manet.cz>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgconf-bridge master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-11-02 12:00+0000\n"
+"PO-Revision-Date: 2009-11-08 11:50+0100\n"
+"Last-Translator: Marek Černocký <marek@manet.cz>\n"
+"Language-Team: Czech <gnome-cs-list@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Poedit-Language: Czech\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: ../libgconf-bridge/gconf-bridge.c:1229
+#, c-format
+msgid "GConf error: %s"
+msgstr "Chyba GConf: %s"
+
+#: ../libgconf-bridge/gconf-bridge.c:1234
+msgid "All further errors shown only on terminal."
+msgstr "Všechny další chyby se zobrazují pouze v terminálu."
+
