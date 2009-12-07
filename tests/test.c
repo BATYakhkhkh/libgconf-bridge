@@ -48,25 +48,25 @@ main (int argc, char **argv)
         gtk_container_add (GTK_CONTAINER (window), vbox);
 
         check = gtk_check_button_new_with_label ("Check");
-        gtk_box_pack_start_defaults (GTK_BOX (vbox), check);
+        gtk_box_pack_start (GTK_BOX (vbox), check, TRUE, TRUE, 0);
         gconf_bridge_bind_property (bridge,
                                     "/apps/gconf-bridge-test/check",
                                     G_OBJECT (check), "active");
 
         entry = gtk_entry_new ();
-        gtk_box_pack_start_defaults (GTK_BOX (vbox), entry);
+        gtk_box_pack_start (GTK_BOX (vbox), entry, TRUE, TRUE, 0);
         gconf_bridge_bind_property (bridge,
                                     "/apps/gconf-bridge-test/text",
                                     G_OBJECT (entry), "text");
 
         label = gtk_label_new ("Testing enums: Ellipsize mode");
-        gtk_box_pack_start_defaults (GTK_BOX (vbox), label);
+        gtk_box_pack_start (GTK_BOX (vbox), label, TRUE, TRUE, 0);
         gconf_bridge_bind_property (bridge,
                                     "/apps/gconf-bridge-test/ellipsize",
                                     G_OBJECT (label), "ellipsize");
 
         scale = gtk_hscale_new_with_range (0.0, 10.0, 0.01);
-        gtk_box_pack_start_defaults (GTK_BOX (vbox), scale);
+        gtk_box_pack_start (GTK_BOX (vbox), scale, TRUE, TRUE, 0);
         adjustment = gtk_range_get_adjustment (GTK_RANGE (scale));
         gconf_bridge_bind_property_delayed (bridge,
                                             "/apps/gconf-bridge-test/scale",
@@ -83,7 +83,7 @@ main (int argc, char **argv)
         gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (tree_view),
                                                      -1, "List",
                                                      cell, "text", 0, NULL);
-        gtk_box_pack_start_defaults (GTK_BOX (vbox), tree_view);
+        gtk_box_pack_start (GTK_BOX (vbox), tree_view, TRUE, TRUE, 0);
 
         gtk_widget_show_all (window);
 
