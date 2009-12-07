@@ -602,7 +602,11 @@ window_binding_perform_scheduled_sync (WindowBinding *binding)
                 char *key;
                 GdkWindowState state;
 
+#if GTK_CHECK_VERSION (2,14,0)
+                state = gdk_window_get_state (gtk_widget_get_window (GTK_WIDGET (binding->window)));
+#else
                 state = gdk_window_get_state (GTK_WIDGET (binding->window)->window);
+#endif
 
                 if (state & GDK_WINDOW_STATE_MAXIMIZED) {
                         key = g_strconcat (binding->key_prefix, "_maximized", NULL);
