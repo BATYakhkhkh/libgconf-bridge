@@ -1,0 +1,25 @@
+# Chinese (China) translation for libgconf-bridge.
+# Copyright (C) 2010 libgconf-bridge's COPYRIGHT HOLDER
+# This file is distributed under the same license as the libgconf-bridge package.
+# 运强 苏 <wzssyqa@gmail.com>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgconf-bridge master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-12-07 22:46+0000\n"
+"PO-Revision-Date: 2010-02-10 17:21+0800\n"
+"Last-Translator: YunQiang Su <wzssyqa@gmail.com>\n"
+"Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../libgconf-bridge/gconf-bridge.c:1233
+#, c-format
+msgid "GConf error: %s"
+msgstr "GConf 错误：%s"
+
+#: ../libgconf-bridge/gconf-bridge.c:1238
+msgid "All further errors shown only on terminal."
+msgstr "所有的进一步错误只在终端上显示。"
