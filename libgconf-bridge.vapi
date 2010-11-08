@@ -12,9 +12,9 @@ namespace GConf {
 		[CCode (cname = "gconf_bridge_bind_window")]
 		public uint bind_window (string key_prefix, Gtk.Window window, bool bind_size, bool bind_pos);
 		[CCode (cname = "gconf_bridge_get")]
-		public static weak Bridge get ();
+		public static unowned Bridge get ();
 		[CCode (cname = "gconf_bridge_get_client")]
-		public weak GConf.Client get_client ();
+		public unowned GConf.Client get_client ();
 		[CCode (cname = "gconf_bridge_install_default_error_handler")]
 		public static void install_default_error_handler ();
 		[CCode (cname = "gconf_bridge_unbind")]
