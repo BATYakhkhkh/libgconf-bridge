@@ -1,0 +1,25 @@
+# Hungarian translation of libgconf-brigde
+# Copyright (C) 2011. Free Software Foundation, Inc.
+# This file is distributed under the same license as the libgconf-brigde package.
+# Balázs Úr <urbalazs at gmail dot com>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgconf-brigde master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-02-11 11:44+0000\n"
+"PO-Revision-Date: 2011-03-30 13:43+0100\n"
+"Last-Translator: Balázs Úr <urbalazs at gmail dot com>\n"
+"Language-Team: Hungarian <gnome at fsf dot hu>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../libgconf-bridge/gconf-bridge.c:1233
+#, c-format
+msgid "GConf error: %s"
+msgstr "GConf hiba: %s"
+
+#: ../libgconf-bridge/gconf-bridge.c:1238
+msgid "All further errors shown only on terminal."
+msgstr "Minden további hiba csak a parancssorban jelenjen meg."
