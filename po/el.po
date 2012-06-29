@@ -1,0 +1,27 @@
+# Greek translation for libgconf-bridge.
+# Copyright (C) 2012 libgconf-bridge's COPYRIGHT HOLDER
+# This file is distributed under the same license as the libgconf-bridge package.
+# Tom Tryfonidis <tomtryf@gmail.com>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgconf-bridge master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-05-27 21:11+0000\n"
+"PO-Revision-Date: 2012-06-29 13:47+0200\n"
+"Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
+"Language-Team: Greek <team@lists.gnome.gr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../libgconf-bridge/gconf-bridge.c:1237
+#, c-format
+msgid "GConf error: %s"
+msgstr "Σφάλμα GConf: %s"
+
+#: ../libgconf-bridge/gconf-bridge.c:1242
+msgid "All further errors shown only on terminal."
+msgstr "Όλα τα περαιτέρω σφάλματα εμφανίζονται μόνο στην κονσόλα."
+
