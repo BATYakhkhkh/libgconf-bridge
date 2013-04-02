@@ -1,0 +1,28 @@
+# Turkish translation for libgconf-bridge.
+# Copyright (C) 2013 libgconf-bridge's COPYRIGHT HOLDER
+# This file is distributed under the same license as the libgconf-bridge package.
+# Muhammet Kara <muhammetk@gmail.com>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgconf-bridge master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-06-29 10:52+0000\n"
+"PO-Revision-Date: 2013-04-03 00:59+0300\n"
+"Last-Translator: Muhammet Kara <muhammetk@gmail.com>\n"
+"Language-Team: Turkish <gnome-turk@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Gtranslator 2.91.6\n"
+
+#: ../libgconf-bridge/gconf-bridge.c:1237
+#, c-format
+msgid "GConf error: %s"
+msgstr "GConf hatası: %s"
+
+#: ../libgconf-bridge/gconf-bridge.c:1242
+msgid "All further errors shown only on terminal."
+msgstr "Sonraki tüm hatalar yalnızca uçbirimde gösterilir."
