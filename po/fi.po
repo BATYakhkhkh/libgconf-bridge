@@ -1,0 +1,29 @@
+# Finnish translation for libgconf-bridge.
+# Copyright (C) 2013 libgconf-bridge's COPYRIGHT HOLDER
+# This file is distributed under the same license as the libgconf-bridge package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Jiri Grönroos <jiri.gronroos+l10n@iki.fi>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgconf-bridge master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-08-26 13:05+0000\n"
+"PO-Revision-Date: 2013-09-12 21:29+0300\n"
+"Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
+"Language-Team: suomi <gnome-fi-laatu@lists.sourceforge.net>\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 2.91.6\n"
+
+#: ../libgconf-bridge/gconf-bridge.c:1237
+#, c-format
+msgid "GConf error: %s"
+msgstr "GConf-virhe: %s"
+
+#: ../libgconf-bridge/gconf-bridge.c:1242
+msgid "All further errors shown only on terminal."
+msgstr "Tulevat virheet näytetään vain päätteessä."
